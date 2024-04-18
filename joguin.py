@@ -308,10 +308,10 @@ def abrir(substantivo):
     print('Eu preciso de "{}" para abrir'.format(eval(substantivo).chave))
     return None
 
-  efeito = eval(substantivo).pegar_item()
-
-  if eval(substantivo).precisa_de_chave == True and eval(substantivo).chave in inventario:
+  if not eval(substantivo).aberto and eval(substantivo).precisa_de_chave == True and eval(substantivo).chave in inventario:
       inventario.remove(eval(substantivo).chave)
+
+  efeito = eval(substantivo).pegar_item()
   
   if efeito is not None:
       efeito()
