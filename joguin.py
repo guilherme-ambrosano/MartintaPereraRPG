@@ -3,6 +3,9 @@ from random import randint, choice
 from collections import OrderedDict
 import itertools
 
+class Acabou(Exception): pass
+class TrocandoFase(Exception): pass
+
 greetings = ["ola", "oi", "oie", "oiee", "oieee", "eae", "iaee", "falae", "iae", "iai", "opa", "eaee"]
 ofensas = ["vsf", "vai toma no cu", "me chupa", "vai toma no meio do seu cu sua piranha do caralho", "vtnc", "vai se fude"]
 
@@ -27,7 +30,8 @@ interacoes = {
         "dizer": "Posso dizer alguma coisa.\nUso: dizer algo",
         "acender": "Posso acender minha lanterna",
         "sair": "Para sair do jogo",
-        "ajuda": "Para obter ajuda sobre os comandos do jogo\nUso: ajuda [comando]"
+        "ajuda": "Para obter ajuda sobre os comandos do jogo\nUso: ajuda [comando]",
+        "codigo": "Use um código para avançar as fases rapidamente"
         }
 
 
@@ -445,6 +449,17 @@ class personagem:
   def get_nome(self):
     return(self.nome)
 
+def codigo(substantivo):
+    global jogo
+    if(jogo<1 and substantivo=="fase2"):
+        print("Avançando para a segunda fase...")
+        jogo = 1
+        raise TrocandoFase
+    elif(jogo<2 and substantivo=="fase3"):
+        print("Avançando para a terceira fase...")
+        jogo=2
+        raise TrocandoFase
+
 verbos = OrderedDict([
      ("ajuda", ajuda),
      ("status", status),
@@ -455,7 +470,8 @@ verbos = OrderedDict([
      ("voltar", voltar),
      ("atacar", atacar),
      ("abrir", abrir),
-     ("sair", sair)
+     ("sair", sair),
+     ("codigo", codigo)
      ])
  
 def primeira_fase():
@@ -783,7 +799,11 @@ def primeira_fase():
     if jogo == 0:
         print("Me vejo em uma rua escura e fria... Melhor procurar abrigo")
 
-    comecar_fase(0)
+    try:
+        comecar_fase(0)
+    except TrocandoFase:
+        print("Saindo da primeira fase...")
+        return
     fim_do_jogo()
 
     
@@ -1020,7 +1040,11 @@ def segunda_fase():
         print("A porta se abre com um estalo e um longo rangido. Ao atravessá-la, me deparo com um longo corredor, com quatro portas")
         pontos += 90
 
-    comecar_fase(1)
+    try:
+        comecar_fase(1)
+    except TrocandoFase:
+        print("Saindo da segunda fase...")
+        return()
     fim_do_jogo()
 
     del corredor, primeiro_quarto, segunda_porta, terceira_porta, quarta_porta, porta
@@ -1052,8 +1076,6 @@ def terceira_fase():
 
     controle = 0
     controle2 = 0
-
-    class Acabou(Exception): pass
 
     manual = {
             "cama_de_viuvo": "Uma cama de viúvo onde casais costumam copular. Posso andar até ela para vê-la melhor"}
@@ -1151,7 +1173,11 @@ def terceira_fase():
         print("Eu subi ao nível 3!")
         print("A porta na verdade era um portal para a casa de "+nome_p9.replace("_"," ")+".\nEu pulo o muro e entro na casa.")
 
-    comecar_fase(2, condicoes_extra = fim)
+    try:
+        comecar_fase(2, condicoes_extra = fim)
+    except TrocandoFase:
+        print("Saindo da terceira fase...")
+        return()
     fim_do_jogo()
 
 print("Bem-vindo ao joguin")
