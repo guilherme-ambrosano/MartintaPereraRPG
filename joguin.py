@@ -1,3 +1,4 @@
+import names
 from random import randint, choice
 from collections import OrderedDict
 import itertools
@@ -440,6 +441,9 @@ class personagem:
             print(self.dialogo["vsf"])
       elif self.frase_padrao is not None:
         print(self.frase_padrao)
+
+  def get_nome(self):
+    return(self.nome)
 
 verbos = OrderedDict([
      ("ajuda", ajuda),
@@ -1024,17 +1028,24 @@ def segunda_fase():
     del arvore, cauboi, satanas_de_vestido, bando_de_morcegos
     del bau_da_direita, bau_da_esquerda, fogo
 
-
-
 def terceira_fase():
+    nome_p1 = names.get_first_name(gender="female")
+    nome_p2 = names.get_first_name(gender="male")
+    nome_p3 = names.get_first_name(gender="female")
+    nome_p4 = names.get_first_name(gender="male")
+    nome_p5 = names.get_first_name(gender="male")
+    nome_p6 = names.get_first_name(gender="male")
+    nome_p7 = names.get_first_name(gender="female")
+    nome_p8 = names.get_first_name(gender="male")
+    nome_p9 = names.get_full_name().replace(" ", "_")
+
     global nome_player
     global vida_player, ataque_player
     global condicoes_triggers, triggers 
     global objetos, personagens, lugar, andavel, jogo, em_combate, manual
     global pontos
-    global casa_do_bruno, quarto, quarto_do_bruno, cama_de_viuvo
-    global laura, wander, denis, marcia, daniel, luis, leandro, bruno, raquel
-    global dialogo_individuo, dialogo_bruno, oi_pro_bruno, individuos
+    global quarto, cama_de_viuvo
+    global dialogo_individuo, dialogo_p9, oi_pro_p9, individuos
     global Acabou
     global fim
     global controle, controle2
@@ -1047,57 +1058,62 @@ def terceira_fase():
     manual = {
             "cama_de_viuvo": "Uma cama de viúvo onde casais costumam copular. Posso andar até ela para vê-la melhor"}
 
-    andavel = ["casa_do_bruno", "quarto", "quarto_do_bruno", "cama_de_viuvo"]
+    andavel = ["casa_de_"+nome_p9, "quarto", "quarto_de_"+nome_p9, "cama_de_viuvo"]
     objetos = []
-    personagens = ["laura", "wander", "denis", "bruno", "luis", "daniel", "raquel", "marcia", "leandro"]
+    personagens = [nome_p1, nome_p2, nome_p3, nome_p9, nome_p6, nome_p5, nome_p8, nome_p4, nome_p7]
 
-    lugar = "casa_do_bruno"
+    lugar = "casa_de_"+nome_p9
 
-    condicoes_triggers = {"primeira_vez_quarto_do_bruno": True}
+    condicoes_triggers = {"primeira_vez_quartop9": True}
 
     def triggers(local):
-        if local == "quarto_do_bruno" and condicoes_triggers["primeira_vez_quarto_do_bruno"] == True:
-            print("Eu entro no quarto do Bruno e me deparo com dois indivíduos acasalando em uma cama de viúvo")
-            condicoes_triggers["primeira_vez_quarto_do_bruno"] = False
+        if local == "quarto_de_"+nome_p9 and condicoes_triggers["primeira_vez_quartop9"] == True:
+            print("Eu entro no quarto de "+nome_p9.replace("_"," ")+" e me deparo com dois indivíduos acasalando em uma cama de viúvo")
+            condicoes_triggers["primeira_vez_quartop9"] = False
 
     def fim():
         global lugar
         global jogo
         global cama_de_viuvo
-        if lugar == "cama_de_viuvo" and cama_de_viuvo == ["quarto_do_bruno"]:
+        if lugar == "cama_de_viuvo" and cama_de_viuvo == ["quarto_de_"+nome_p9]:
             print("\nParabéns! Você ganhou!\n")
             jogo = 666
             raise Acabou
 
-    casa_do_bruno = ["bruno", "quarto_do_bruno", "quarto", "fim"]
-    quarto = ["laura", "casa_do_bruno"]
-    quarto_do_bruno = ["cama_de_viuvo","casa_do_bruno"]
+    quarto = [nome_p1, "casa_de_"+nome_p9]
+    exec("global casa_de_"+nome_p9+"\ncasa_de_"+nome_p9+"= [nome_p9, \"quarto_de_\"+nome_p9, \"quarto\", \"fim\"]")
+    exec("global quarto_de_"+nome_p9+"\nquarto_de_"+nome_p9+"= [\"cama_de_viuvo\",\"casa_de_\"+nome_p9]")
 
-    cama_de_viuvo = ["quarto_do_bruno"]
-    individuos = ["wander", "denis", "marcia", "daniel", "luis", "leandro", "raquel"]
+    cama_de_viuvo = ["quarto_de_"+nome_p9]
+    individuos = [nome_p2, nome_p3, nome_p4, nome_p5, nome_p6, nome_p7, nome_p8]
 
     for i in range(2):
         individuo = individuos[randint(0,len(individuos)-1)]
         cama_de_viuvo.insert(0, individuo)
         individuos.remove(individuo)
 
-    def oi_pro_bruno():
+    global primeiro_oi_p9
+    primeiro_oi_p9=True
+    def oi_pro_p9():
         global vida_player, ataque_player, inventario
-        global nome_player, cama_de_viuvo
-        print("Olá, {0}!\nVocê está procurando por {1}? Da última vez que eu vi, estava entrando no meu quarto...\nTome, isto vai te ajudar em sua jornada".format(nome_player, eval(cama_de_viuvo[0]).nome))
-        aleatorio = randint(0,2)
-        if aleatorio == 0:
-            ataque_player += randint(1,3)
-            print("Bruno me deu um power-up! Meu ataque agora é {}".format(ataque_player))
-        elif aleatorio == 1:
-            vida_player += randint(1,3)
-            print("Bruno me deu um bonus de vida! Minha vida agora é {}".format(vida_player))
-        elif aleatorio == 2:
-            inventario.append("chave")
-            print("Bruno me deu uma chave!")
+        global nome_player, cama_de_viuvo, primeiro_oi_p9
+        print("Olá, {0}!\nVocê está procurando por {1}? Da última vez que eu vi, estava entrando no meu quarto...".format(nome_player, eval(cama_de_viuvo[0]).nome))
+        if(primeiro_oi_p9):
+            print("Tome, isto vai te ajudar em sua jornada.")
+            primeiro_oi_p9 = False
+            aleatorio = randint(0,2)
+            if aleatorio == 0:
+                ataque_player += randint(1,3)
+                print(nome_p9.replace("_"," ") + " me deu um power-up! Meu ataque agora é {}".format(ataque_player))
+            elif aleatorio == 1:
+                vida_player += randint(1,3)
+                print(nome_p9.replace("_"," ") + " me deu um bonus de vida! Minha vida agora é {}".format(vida_player))
+            elif aleatorio == 2:
+                inventario.append("chave")
+                print(nome_p9.replace("_"," ") + " me deu uma chave!")
 
-    dialogo_bruno = {"oi": oi_pro_bruno,
-            "vsf": "O Bruno me olha bravo"}
+    dialogo_p9 = {"oi": oi_pro_p9,
+            "vsf": nome_p9.replace("_"," ") + " me olha com raiva"}
 
     def oi_pros_individuos():
         global cama_de_viuvo
@@ -1120,20 +1136,20 @@ def terceira_fase():
     dialogo_individuo = {"oi": oi_pros_individuos,
              "vsf": vsf_pros_individuos}
 
-    laura = personagem(vida = 5, ataque = 1, nome = "Laura")
-    denis = personagem(vida = 2, ataque = 1, nome = "Dênis", dialogo = dialogo_individuo)
-    marcia = personagem(vida = 2, ataque = 1, nome = "Márcia", dialogo = dialogo_individuo)
-    daniel = personagem(vida = 2, ataque = 1, nome = "Daniel", dialogo = dialogo_individuo)
-    luis = personagem(vida = 2, ataque = 1, nome = "Luis", dialogo = dialogo_individuo)
-    leandro = personagem(vida = 2, ataque = 1, nome = "Leandro", dialogo = dialogo_individuo)
-    raquel = personagem(vida = 2, ataque = 1, nome = "Raquel", dialogo = dialogo_individuo)
-    wander = personagem(vida = 2, ataque = 1, nome = "Wander", dialogo = dialogo_individuo)
+    exec("global "+nome_p1+"\n"+nome_p1+"= personagem(vida = 5, ataque = 1, nome = nome_p1)")
+    exec("global "+nome_p3+"\n"+nome_p3+"= personagem(vida = 2, ataque = 1, nome = nome_p3, dialogo = dialogo_individuo)")
+    exec("global "+nome_p4+"\n"+nome_p4+"= personagem(vida = 2, ataque = 1, nome = nome_p4, dialogo = dialogo_individuo)")
+    exec("global "+nome_p5+"\n"+nome_p5+"= personagem(vida = 2, ataque = 1, nome = nome_p5, dialogo = dialogo_individuo)")
+    exec("global "+nome_p6+"\n"+nome_p6+"= personagem(vida = 2, ataque = 1, nome = nome_p6, dialogo = dialogo_individuo)")
+    exec("global "+nome_p7+"\n"+nome_p7+"= personagem(vida = 2, ataque = 1, nome = nome_p7, dialogo = dialogo_individuo)")
+    exec("global "+nome_p8+"\n"+nome_p8+"= personagem(vida = 2, ataque = 1, nome = nome_p8, dialogo = dialogo_individuo)")
+    exec("global "+nome_p2+"\n"+nome_p2+"= personagem(vida = 2, ataque = 1, nome = nome_p2, dialogo = dialogo_individuo)")
 
-    bruno = personagem(nome = "Bruno", vida = 10, ataque = 2, dialogo = dialogo_bruno)
+    exec("global "+nome_p9+"\n"+nome_p9 +"= personagem(nome = nome_p9.replace(\"_\",\" \"), vida = 10, ataque = 2, dialogo = dialogo_p9)")
 
     if jogo == 2:
         print("Eu subi ao nível 3!")
-        print("A porta na verdade era um portal para a casa do Bruno.\nEu pulo o muro e entro na casa.")
+        print("A porta na verdade era um portal para a casa de "+nome_p9.replace("_"," ")+".\nEu pulo o muro e entro na casa.")
 
     comecar_fase(2, condicoes_extra = fim)
     fim_do_jogo()
@@ -1145,6 +1161,8 @@ print()
 nome_player = input("Digite seu nome: ")
 print()
 
+jogo=0
 primeira_fase()
 segunda_fase()
 terceira_fase()
+
